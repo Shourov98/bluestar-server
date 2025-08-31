@@ -38,7 +38,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: `http://localhost:${PORT}`,
+        url: `https://bluestar-server.onrender.com/`,
         description: "Development server",
       },
     ],
