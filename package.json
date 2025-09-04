@@ -2,7 +2,7 @@
   "name": "nodemailerAPI",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "nodemon api/server.js",
     "server": "nodemon api/server.js",
