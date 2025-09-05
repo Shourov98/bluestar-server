@@ -60,15 +60,15 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Email configuration - FIXED for Gmail
 const transporter = nodemailer.createTransport({
-  service: "gmail", // Use Gmail service instead of manual config
+ // service: "gmail", // Use Gmail service instead of manual config
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASSWORD,
   },
   // Fallback to manual config if service doesn't work
-  host: process.env.EMAIL_HOST || "smtp.gmail.com",
-  port: parseInt(process.env.EMAIL_PORT) || 587,
-  secure: false,
+  host: process.env.EMAIL_HOST, // "smtp.gmail.com"
+  port: parseInt(process.env.EMAIL_PORT) , // 587
+  secure: true,
   tls: {
     rejectUnauthorized: false,
   },
