@@ -21,7 +21,7 @@ console.log("EMAIL_PORT:", process.env.EMAIL_PORT);
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({origin: "https://bluestarmgt.com/"});
 // const staticDir = path.join(__dirname, "api", "dist");
 // app.use(express.static(staticDir));
 // console.log("Serving static from:", staticDir);
