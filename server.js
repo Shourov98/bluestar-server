@@ -20,19 +20,17 @@ function getGraphClient() {
   );
 
   return Client.init({
-    authProvider: {
-      getAccessToken: async () => {
-        const tokenResponse = await credential.getToken(
-          "https://graph.microsoft.com/.default"
-        );
-        return tokenResponse.token;
-      },
+    authProvider: (done) => {
+      credential
+        .getToken("https://graph.microsoft.com/.default")
+        .then((tokenResponse) => done(null, tokenResponse.token))
+        .catch((err) => done(err, null));
     },
   });
 }
 
 // Send mail function
-async function sendMail({ from, to, replyTo, subject, html }) {
+async function sendMail({ to, replyTo, subject, html }) {
   const client = getGraphClient();
 
   const message = {
@@ -41,12 +39,13 @@ async function sendMail({ from, to, replyTo, subject, html }) {
       contentType: "HTML",
       content: html,
     },
-    from: { emailAddress: { address: from } },
     toRecipients: to.map((addr) => ({ emailAddress: { address: addr } })),
     replyTo: replyTo ? [{ emailAddress: { address: replyTo } }] : [],
   };
 
-  await client.api(`/users/${from}/sendMail`).post({ message });
+  await client
+    .api(`/users/${process.env.EMAIL_USER}/sendMail`)
+    .post({ message });
 }
 
 // API endpoint
@@ -62,8 +61,7 @@ app.post("/api/contact", async (req, res) => {
 
   try {
     await sendMail({
-      from: process.env.EMAIL_USER, // steve@bluestarmgt.com
-      to: ["steve@bluestarmgt.com"], // ✅ only Steve now
+      to: ["steve@bluestarmgt.com"], // ✅ only Steve
       replyTo: email,
       subject: `Contact Form: ${subject}`,
       html: `
@@ -79,7 +77,7 @@ app.post("/api/contact", async (req, res) => {
       message: "Your message has been sent successfully!",
     });
   } catch (error) {
-    console.error("❌ Error sending email:", error.body || error);
+    console.error("❌ Error sending email:", JSON.stringify(error, null, 2));
     res.status(500).json({
       success: false,
       error: error.message || "Failed to send message. Please try again later.",
